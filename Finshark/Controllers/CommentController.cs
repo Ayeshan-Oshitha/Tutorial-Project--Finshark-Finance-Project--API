@@ -54,5 +54,17 @@ namespace Finshark.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = commentModel.Id}, commentModel.ToCommentDto());
         }
+
+        [HttpPut]
+        [Route("update/{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto updateDto)
+        {
+            var comment = await _commentRepository.UpdateAsync(id, updateDto.ToCommentFromUpdate(id));
+            if (comment == null)
+            {
+                return NotFound("Comment not found");
+            }
+            return Ok(comment.ToCommentDto());
+        }
     }
 }

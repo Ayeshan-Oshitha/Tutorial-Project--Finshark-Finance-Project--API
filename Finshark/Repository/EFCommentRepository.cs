@@ -30,6 +30,19 @@ namespace Finshark.Repository
             return commentModel;
         }
 
+        public async Task<Comment?> UpdateAsync(int id, Comment commentModel)
+        {
+            var existingComment = await _dbContext.Comments.FindAsync(id);
+            if (existingComment == null)
+            {
+                return null;
+            }
+            existingComment.Title = commentModel.Title;
+            existingComment.Content = commentModel.Content;
+            await _dbContext.SaveChangesAsync();
+            return existingComment;
+        }
+
 
 
     }
