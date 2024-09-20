@@ -18,6 +18,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 });
 
 builder.Services.AddScoped<IStockRepository, EFStockRepository>();
+builder.Services.AddScoped<ICommentRepository, EFCommentRepository>();
 
 var app = builder.Build();
 
