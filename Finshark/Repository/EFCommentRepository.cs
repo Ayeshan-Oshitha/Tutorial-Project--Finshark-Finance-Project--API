@@ -43,7 +43,16 @@ namespace Finshark.Repository
             return existingComment;
         }
 
-
-
+        public async Task<Comment?> DeleteAsync(int id)
+        {
+            var commentModel = await _dbContext.Comments.FirstOrDefaultAsync(x => x.Id == id);
+            if(commentModel == null)
+            {
+                return null;
+            }
+            _dbContext.Comments.Remove(commentModel);
+            await _dbContext.SaveChangesAsync();
+            return commentModel;
+        }
     }
 }
