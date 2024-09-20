@@ -1,4 +1,5 @@
 ﻿using Finshark.Data;
+using Finshark.DTOs.Stock;
 using Finshark.Mappers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ namespace Finshark.Controllers
         }
 
         [HttpGet]
+        [Route("GetAll")]
         public IActionResult GetAll()
         {
             var stocks = _dbContext.Stocks.ToList()
@@ -24,7 +26,8 @@ namespace Finshark.Controllers
             return Ok(stocks);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("GetById/{id}")]
         public IActionResult GetById([FromRoute]  int id) 
         { 
             var stock = _dbContext.Stocks.Find(id);
@@ -35,6 +38,17 @@ namespace Finshark.Controllers
             }
 
             return Ok(stock.ToStockDto());
+        }
+
+
+        [HttpPost]
+        public IActionResult Create([FromBody] CreateStockRequestDto stockDto)
+        {
+            var stockModel = stockDto.ToStockFromCreateDto();
+            _dbContext.Stocks.Add(stockModel);
+            _dbContext.SaveChanges();
+
+            return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel.ToStockDto());
         }
     }
 }
