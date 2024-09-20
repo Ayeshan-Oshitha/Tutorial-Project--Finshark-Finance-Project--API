@@ -16,6 +16,7 @@ namespace Finshark.Controllers
             _dbContext = context;
         }
 
+
         [HttpGet]
         [Route("GetAll")]
         public IActionResult GetAll()
@@ -25,6 +26,7 @@ namespace Finshark.Controllers
 
             return Ok(stocks);
         }
+
 
         [HttpGet]
         [Route("GetById/{id}")]
@@ -42,6 +44,7 @@ namespace Finshark.Controllers
 
 
         [HttpPost]
+        [Route("Create")]
         public IActionResult Create([FromBody] CreateStockRequestDto stockDto)
         {
             var stockModel = stockDto.ToStockFromCreateDto();
@@ -50,5 +53,28 @@ namespace Finshark.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel.ToStockDto());
         }
+
+        [HttpPut]
+        [Route("Update/{id}")]
+        public IActionResult Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto )
+        {
+            var stockModel = _dbContext.Stocks.FirstOrDefault( x => x.Id == id );
+            if (stockModel == null)
+            {
+                return NotFound();
+            }
+
+            stockModel.Symbol = updateDto.Symbol;
+            stockModel.CompanyName = updateDto.CompanyName;
+            stockModel.Purchase = updateDto.Purchase;
+            stockModel.LastDiv  = updateDto.LastDiv;
+            stockModel.Industry = updateDto.Industry;
+            stockModel.MarketCap = updateDto.MarketCap;
+
+            _dbContext.SaveChanges();
+            return Ok(stockModel.ToStockDto() );
+
+        }
+
     }
 }
