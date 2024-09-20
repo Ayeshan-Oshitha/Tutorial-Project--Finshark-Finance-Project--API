@@ -16,5 +16,10 @@ namespace Finshark.Repository
         {
             return await _dbContext.Comments.ToListAsync();
         }
+
+        public async Task<Comment?> GetByIdAsync(int id)
+        {
+            return await _dbContext.Comments.FindAsync(id);
+        }
     }
 }

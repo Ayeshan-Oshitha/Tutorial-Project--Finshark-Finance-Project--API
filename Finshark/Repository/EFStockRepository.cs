@@ -17,12 +17,12 @@ namespace Finshark.Repository
 
         public async Task<List<Stock>> GetAllAsync()
         {
-            return await _dbContext.Stocks.ToListAsync();
+            return await _dbContext.Stocks.Include(c => c.Comments).ToListAsync();
         }
 
         public async Task<Stock?> GetByIdAsync(int id)
         {
-            return await _dbContext.Stocks.FindAsync(id);
+            return await _dbContext.Stocks.Include(c => c.Comments).FirstOrDefaultAsync( i => i.Id == id);
         }
 
         public async Task<Stock> CreateAsync(Stock stockModel)
