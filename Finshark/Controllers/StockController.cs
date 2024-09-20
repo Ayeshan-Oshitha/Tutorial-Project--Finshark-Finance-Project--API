@@ -54,6 +54,7 @@ namespace Finshark.Controllers
             return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel.ToStockDto());
         }
 
+
         [HttpPut]
         [Route("Update/{id}")]
         public IActionResult Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto )
@@ -73,8 +74,23 @@ namespace Finshark.Controllers
 
             _dbContext.SaveChanges();
             return Ok(stockModel.ToStockDto() );
-
         }
+
+
+        [HttpDelete]
+        [Route("Delete/{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            var stockModel = _dbContext.Stocks.FirstOrDefault( x => x.Id == id);
+            if(stockModel == null)
+            {
+                return NotFound();
+            }
+            _dbContext.Stocks.Remove(stockModel);
+            _dbContext.SaveChanges();
+            return NoContent();
+        }
+
 
     }
 }
