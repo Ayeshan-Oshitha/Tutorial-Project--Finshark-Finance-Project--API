@@ -94,6 +94,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IStockRepository, EFStockRepository>();
 builder.Services.AddScoped<ICommentRepository, EFCommentRepository>();
 builder.Services.AddScoped<ITokenService, EFTokenService>();
+builder.Services.AddScoped<IPortfolioRepository, EFPortfolioRepository>();
 
 var app = builder.Build();
 
