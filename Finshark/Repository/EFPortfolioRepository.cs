@@ -36,5 +36,19 @@ namespace Finshark.Repository
             await _dbContext.SaveChangesAsync();
             return portfolio;
         }
+
+        public async Task<Portfolio> DeletePortfolio(AppUser appUser, string symbol)
+        {
+            var portfolio = await _dbContext.Portfolios.FirstOrDefaultAsync(x => x.AppUserId == appUser.Id && x.Stock.Symbol.ToLower() == symbol.ToLower());
+
+            if(portfolio == null)
+            {
+                return null;
+            }
+
+            _dbContext.Portfolios.Remove(portfolio); 
+            await _dbContext .SaveChangesAsync();
+            return portfolio;
+        }
     }
 }

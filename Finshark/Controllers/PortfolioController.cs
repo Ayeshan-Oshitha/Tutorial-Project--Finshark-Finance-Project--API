@@ -72,5 +72,29 @@ namespace Finshark.Controllers
                 return Created();
             }
         }
+
+
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> DeletePortfolio(string symbol)
+        {
+            var userName = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(userName);
+
+            var userPortfolio = await _portfolioRepository.GetUserPortfolio(appUser);
+
+            var filteredStock = userPortfolio.Where(s => s.Symbol.ToLower() == symbol.ToLower());
+
+            if(filteredStock.Count() == 1)
+            {
+                await _portfolioRepository.DeletePortfolio(appUser, symbol);
+            }
+            else
+            {
+                return BadRequest("Stock is not in your portfolio");
+            }
+
+            return Ok();
+        }
     }
 }
