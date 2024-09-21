@@ -2,6 +2,7 @@ using Finshark.Data;
 using Finshark.Interfaces;
 using Finshark.Models;
 using Finshark.Repository;
+using Finshark.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -63,6 +64,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IStockRepository, EFStockRepository>();
 builder.Services.AddScoped<ICommentRepository, EFCommentRepository>();
+builder.Services.AddScoped<ITokenService, EFTokenService>();
 
 var app = builder.Build();
 
