@@ -3,6 +3,7 @@ using Finshark.DTOs.Stock;
 using Finshark.Helpers;
 using Finshark.Interfaces;
 using Finshark.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace Finshark.Controllers
         }
 
 
+        [Authorize]
         [HttpGet]
         [Route("GetAll")]
         public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
