@@ -90,5 +90,10 @@ namespace Finshark.Repository
         {
              return await _dbContext.Stocks.AnyAsync( x => x.Id == id);
         }
+
+        public async Task<Stock?> GetBySymbolAsync(string symbol)
+        {
+            return await _dbContext.Stocks.FirstOrDefaultAsync( s => s.Symbol == symbol);
+        }
     }
 }
