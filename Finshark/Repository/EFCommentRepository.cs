@@ -15,12 +15,14 @@ namespace Finshark.Repository
 
         public async Task<List<Comment>> GetAllAsync()
         {
-            return await _dbContext.Comments.ToListAsync();
+            return await _dbContext.Comments.Include( a => a.AppUser).ToListAsync();
+
+
         }
 
         public async Task<Comment?> GetByIdAsync(int id)
         {
-            return await _dbContext.Comments.FindAsync(id);
+            return await _dbContext.Comments.Include(a => a.AppUser).FirstOrDefaultAsync( c => c.Id == id);
         }
 
         public async Task<Comment> CreateAsync(Comment commentModel)
