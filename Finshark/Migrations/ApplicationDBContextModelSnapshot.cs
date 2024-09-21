@@ -116,6 +116,21 @@ namespace Finshark.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("Finshark.Models.Portfolio", b =>
+                {
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("StockId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppUserId", "StockId");
+
+                    b.HasIndex("StockId");
+
+                    b.ToTable("Portfolios");
+                });
+
             modelBuilder.Entity("Finshark.Models.Stock", b =>
                 {
                     b.Property<int>("Id")
@@ -179,13 +194,13 @@ namespace Finshark.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a3af1494-4bdc-4d6a-9c3e-1eb16a7411aa",
+                            Id = "56eabaa7-5c17-42eb-a38c-a64719fa4e36",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "34b69636-7a9e-4750-b16d-99b47cda686d",
+                            Id = "7befb208-ca55-41da-a64d-2b767f778185",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -306,6 +321,25 @@ namespace Finshark.Migrations
                     b.Navigation("Stock");
                 });
 
+            modelBuilder.Entity("Finshark.Models.Portfolio", b =>
+                {
+                    b.HasOne("Finshark.Models.AppUser", "AppUser")
+                        .WithMany("Portfolios")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Finshark.Models.Stock", "Stock")
+                        .WithMany("Portfolios")
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Stock");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -357,9 +391,16 @@ namespace Finshark.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Finshark.Models.AppUser", b =>
+                {
+                    b.Navigation("Portfolios");
+                });
+
             modelBuilder.Entity("Finshark.Models.Stock", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Portfolios");
                 });
 #pragma warning restore 612, 618
         }
