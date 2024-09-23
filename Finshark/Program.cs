@@ -95,6 +95,9 @@ builder.Services.AddScoped<IStockRepository, EFStockRepository>();
 builder.Services.AddScoped<ICommentRepository, EFCommentRepository>();
 builder.Services.AddScoped<ITokenService, EFTokenService>();
 builder.Services.AddScoped<IPortfolioRepository, EFPortfolioRepository>();
+builder.Services.AddScoped<IFMPService, EFFMPService>();
+
+builder.Services.AddHttpClient<IFMPService, EFFMPService>();
 
 var app = builder.Build();
 

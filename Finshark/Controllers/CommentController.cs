@@ -16,12 +16,14 @@ namespace Finshark.Controllers
         private readonly ICommentRepository _commentRepository;
         private readonly IStockRepository _stockRepository;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IFMPService _fmpService;
         public CommentController(ICommentRepository commentRepository, IStockRepository stockRepository,
-            UserManager<AppUser> userManager)
+            UserManager<AppUser> userManager, IFMPService fMPService)
         {
             _commentRepository = commentRepository;
             _stockRepository = stockRepository;
             _userManager = userManager;
+            _fmpService = fMPService;
         }
 
 
@@ -57,23 +59,33 @@ namespace Finshark.Controllers
         }
 
         [HttpPost]
-        [Route("Create/{stockId:int}")]
-        public async Task<IActionResult> Create([FromRoute] int stockId, [FromBody] CreateCommentDto commentDto)
+        [Route("Create/{symbol:alpha}")]
+        public async Task<IActionResult> Create([FromRoute] string symbol, [FromBody] CreateCommentDto commentDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!await _stockRepository.StockExists(stockId))
+            var stock = await _stockRepository.GetBySymbolAsync(symbol);
+
+            if (stock == null)
             {
-                return BadRequest("Stock does not exist");
+                stock = await _fmpService.FindStockBySymbolAsync(symbol);
+                if(stock == null)
+                {
+                    return BadRequest("Stock does not exist");
+                }
+                else
+                {
+                    await _stockRepository.CreateAsync(stock);
+                }
             }
 
             var userName = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(userName);
 
-            var commentModel = commentDto.ToCommentFromCreate(stockId);
+            var commentModel = commentDto.ToCommentFromCreate(stock.Id);
             commentModel.AppUserId = appUser.Id;
 
 
