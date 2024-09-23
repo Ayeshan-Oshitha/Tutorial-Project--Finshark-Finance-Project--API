@@ -1,8 +1,10 @@
 ﻿using Finshark.DTOs.Comment;
 using Finshark.Extensions;
+using Finshark.Helpers;
 using Finshark.Interfaces;
 using Finshark.Mappers;
 using Finshark.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,15 +30,16 @@ namespace Finshark.Controllers
 
 
         [HttpGet]
+        [Authorize]
         [Route("GetAll")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery]CommentQueryObject queryObject)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var comments = await _commentRepository.GetAllAsync();
+            var comments = await _commentRepository.GetAllAsync(queryObject);
             var commentDto = comments.Select(s => s.ToCommentDto());
             return Ok(commentDto);
         }
